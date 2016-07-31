@@ -17,14 +17,16 @@
 /**
  * Sensor Ultrason
  */
+#define ULTRASON_VCC 9
 #define ULTRASON_TRIGGER 10
 #define ULTRASON_ECHO 11
+#define ULTRASON_GND 12
 
 #define POT_SPEED A0
 
 Ultrasonic ultrasonic(ULTRASON_TRIGGER, ULTRASON_ECHO);
 
-const int DISTANCIA_MINIMA = 20;
+const int DISTANCIA_MINIMA = 10;
 
 bool andando = false;
 bool obstaculo = false;
@@ -41,8 +43,13 @@ void setup() {
   	pinMode(M2_IN1, OUTPUT);
   	pinMode(M2_IN2, OUTPUT);
 
+  	pinMode(ULTRASON_VCC, OUTPUT);
   	pinMode(ULTRASON_TRIGGER, OUTPUT);
   	pinMode(ULTRASON_ECHO, INPUT);
+  	pinMode(ULTRASON_GND, OUTPUT);
+
+  	digitalWrite(ULTRASON_VCC, HIGH);
+  	digitalWrite(ULTRASON_GND, LOW);
 
   	parar();
 }
@@ -60,7 +67,7 @@ void loop() {
 	 	traz();
 	 	delay(500);
 	 	esquerda();
-	 	delay(500);
+	 	delay(300);
 	}
 
 	frente();
@@ -71,7 +78,7 @@ void distancia() {
 
 	obstaculo = distancia < DISTANCIA_MINIMA;
 
-	delay(250);
+	delay(100);
 }
 
 void velocidade() {
