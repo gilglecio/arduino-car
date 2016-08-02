@@ -1,4 +1,7 @@
 #include <Ultrasonic.h>
+#include <LinkedList.h>
+#include <Gaussian.h>
+#include <GaussianAverage.h>
 
 /**
  * Motor A
@@ -26,7 +29,9 @@
 
 Ultrasonic ultrasonic(ULTRASON_TRIGGER, ULTRASON_ECHO);
 
-const int DISTANCIA_MINIMA = 10;
+GaussianAverage media(5);
+
+const int DISTANCIA_MINIMA = 20;
 
 bool andando = false;
 bool obstaculo = false;
@@ -51,6 +56,8 @@ void setup() {
   	digitalWrite(ULTRASON_VCC, HIGH);
   	digitalWrite(ULTRASON_GND, LOW);
 
+  	//Serial.begin(9600);
+
   	parar();
 }
 
@@ -74,11 +81,21 @@ void loop() {
 }
 
 void distancia() {
+
 	float distancia = ultrasonic.Ranging(CM);
 
-	obstaculo = distancia < DISTANCIA_MINIMA;
+	media += distancia;
+	media.process();
 
-	delay(100);
+	obstaculo = media.mean < DISTANCIA_MINIMA;
+	
+	// Serial.print(distancia);
+	// Serial.print("\t");
+	// Serial.print(media.mean);
+	// Serial.print("\t");
+	// Serial.println(obstaculo);
+
+	// delay(25);
 }
 
 void velocidade() {
